@@ -71,16 +71,16 @@ difference between the first place candidate and the second is 100.
     Texas,23,2.1000000000000014
     Iowa,1,2.280000000000001
     $ tail district_margins.csv
-    Georgia,3,100.0
-    Georgia,14,100.0
-    Florida,25,100
-    Georgia,5,100.0
-    Florida,14,100
-    Georgia,11,100.0
+    Florida,12,100.0
     Pennsylvania,18,100.0
-    West Virginia,5,100.0
-    West Virginia,4,100.0
-    Florida,27,100
+    Georgia,11,100.0
+    Florida,25,100.0
+    Pennsylvania,14,100.0
+    Georgia,13,100.0
+    Texas,4,100.0
+    Pennsylvania,15,100.0
+    Georgia,5,100.0
+    Florida,14,100.0
 
 To complete this assignment you'll need to complete three functions:
 * district_margins
@@ -127,3 +127,11 @@ You'll need to submit your assignment (word_counts.py, districts.py,
 and writeup.txt) on
 [Moodle](https://moodle.cs.colorado.edu/course/view.php?id=49) as an
 upload.
+
+Hints
+-----------------------
+* Only consider general elections for the 114th congress.  Ignore primaries and special elections for unexpired terms.
+* The file may have errors.  For the purposes of this assignment, you are not allowed to edit the source data.  This may result in you having to resort to dirty hacks.
+* You will need to understand the file to understand what's going on.  This is part of the assignment.  Wikipedia is your friend.
+* Different states handle party affiliations differently.  Don't assume that if your code works for one state, it will work for all states.  
+* Make sure you have the correct number of districts in your output file.  There are 438 voting districts, plus a handful of non-voting districts.
