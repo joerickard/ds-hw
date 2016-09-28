@@ -80,7 +80,7 @@ The first few lines of your output file will look something like:
 
 
 
-Note: Don't worry about getting the exact same log probabilities as here (they might vary depending on the log base you're using the Laplace smoothing parameter).
+Note: Don't worry about getting the exact same log probabilities as here (they might vary depending on the log base you're using, and also Laplace smoothing parameter).
 
 
 
