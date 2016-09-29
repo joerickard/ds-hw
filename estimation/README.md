@@ -78,10 +78,6 @@ The first few lines of your output file will look something like:
 	-7.437942	-7.276854	Fixing a broken immigration system.
 
 
-Note: Don't worry about getting the exact same log probabilities as here (they might vary depending on the log base you're using, and also Laplace smoothing parameter).
-
-
-
 Writeup (10 points)
 -----------------------
 
