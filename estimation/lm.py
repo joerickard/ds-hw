@@ -60,12 +60,11 @@ class BigramLanguageModel:
         
         # Add your code here!
         # Bigram counts
-        self._obs_counts = defaultdict(Counter)
         self._vocab_final = False
 
     def train_seen(self, word):
         """
-        Tells the language model that a word has been seen @count times.  This
+        Tells the language model that a word has been seen.  This
         will be used to build the final vocabulary.
         """
         assert not self._vocab_final, \
@@ -187,7 +186,7 @@ if __name__ == "__main__":
     
         print("Trained language model for %s" % name)
 
-    with open("../data/2016-obama.txt") as infile:
+    with open("../data/2016-obama.txt", encoding='utf8') as infile:
         print("REP\t\tDEM\t\tSentence\n" + "=" * 80)
         for ii in infile:
             if len(ii) < 15: # Ignore short sentences
