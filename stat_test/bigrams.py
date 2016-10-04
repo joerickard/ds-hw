@@ -22,7 +22,7 @@ kSTOPWORDS = set(['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', '
                   'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any',
                   'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no',
                   'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very',
-                  's', 't', 'can', 'will', 'just', 'don', 'should', 'now'])
+                  's', 't', 'can', 'will', 'just', 'don', 'should', 'now', 've', 'm'])
 
 def bigrams(sentence):
     """
@@ -71,7 +71,7 @@ class BigramFinder:
     Finds bigrams in a stream of text.
     """
 
-    def __init__(self, min_unigram = 10, max_unigram = 500, min_ngram = 5,
+    def __init__(self, min_unigram = 10, max_unigram = 150, min_ngram = 5,
                  exclude=[]):
         """
         Instantiates the class.
@@ -121,7 +121,7 @@ class BigramFinder:
 
         # you shouldn't need to edit this function
         if any(x in self._exclude for x in bigram):
-            return 0.0
+            return 1.0
 
         obs, ex = self.observed_and_expected(bigram)
                 
@@ -141,7 +141,8 @@ class BigramFinder:
         """
         Return the finder's vocab
         """
-        
+
+        # Don't modify this function.        
         return self._vocab
 
     def finalize(self):
