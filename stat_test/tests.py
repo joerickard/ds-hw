@@ -56,10 +56,10 @@ class TestBigramFinder(unittest.TestCase):
             
     def testVar(self):
         x = [9, 2, 1]
-        self.assertAlmostEqual(unbiased_sample_variance(x, 4), 9.5)
+        self.assertAlmostEqual(unbiased_sample_variance(x, 4), 19.0)
 
     def testDegreesOfFreedom(self):
-        self.assertAlmostEqual(degrees_of_freedom(1, 2, 4, 8), 42/5.)
+        self.assertAlmostEqual(degrees_of_freedom(1, 2, 4, 8), 9 * 42/38.)
 
     def testStatistic(self):
         self.assertAlmostEqual(t_statistic(27.15, 11.95, 20, 20, 156.5, 213.7444),
