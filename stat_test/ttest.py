@@ -36,14 +36,14 @@ def t_statistic(mean1, mean2, n1, n2, svar1, svar2):
 
 def t_test(sample1, sample2):
     """
-    Return the p-value of a t test with unequal variance for two samples.
+    Return the two-tailed p-value of a t test with unequal variance for two samples.
 
     @param sample1 An iterable of the first sample
     @param sample2 An iterable of the second sample
     """
 
 
-    
+
     return 0.0
 
 if __name__ == "__main__":
