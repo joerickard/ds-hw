@@ -56,6 +56,27 @@ To do this, you'll need to implement the following functions:
 * add_train
 * log_likelihood
 
+The generate function is a little different from the other functions.
+Here, you actually need to sample from a conditional distribution.
+This will be random (it will give different results if you call
+it multiple times).  Thus, it's hard to write effective unit tests for
+it.
+
+We discussed sampling from a single multinomial distribution in
+class.  This requires computing a random number and then selecting the
+cummulative multinomial bin larger than the random number.  Here
+you'll do it over an over again to generate a reasonable looking
+sentence.
+
+First, you'll generate a word given a specified context.  Let's
+pretend we start with the start tag.  The start tag has a distribution
+over its next words (this is what you're estimating using the Laplace
+function).  You need to sample from that estimated multinomial
+distribution.  You've now generated a word.  You'll keep doing that
+for a specified number of times (or until you generate an end sentence
+tag).  This is also true of unseen contexts, in which case the
+distribution is just the uniform distribution.
+
 WARNING: Writing a unit test for generation is tricky (without
 creating a testing stub for the random number generator), so make sure
 you are thorough in making sure this works correctly.
