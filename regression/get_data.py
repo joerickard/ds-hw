@@ -1,11 +1,11 @@
+from csv import DictWriter
+import re
 
 from pollster import Pollster
-
-from csv import DictWriter
-
 pollster = Pollster()
 
-kFIELDS = ['YEAR', 'NAME', 'MOE', 'SUBPOP', 'SUBPOPID', 'CHOICE', 'PARTY', 'VALUE', 'OBS', 'STATE']
+kDATE = re.compile("[0-9]*-[0-9][0-9]-[0-9][0-9]")
+kFIELDS = ['YEAR', 'DATE', 'TOPIC', 'NAME', 'MOE', 'SUBPOP', 'SUBPOPID', 'CHOICE', 'PARTY', 'VALUE', 'OBS', 'STATE']
 
 if __name__ == "__main__":
     o = DictWriter(open("data.csv", 'w'), kFIELDS)
@@ -16,7 +16,9 @@ if __name__ == "__main__":
         entry = pollster.charts(topic='%i-president' % year)
         for chart in entry:
             for poll in chart.polls():
+                line['DATE'] = kDATE.findall(str(poll))[-1]
                 for question in poll.questions:
+                    line['TOPIC'] = question['topic']
                     line['NAME'] = question['name']
                     line['STATE'] = question['state']
                     subpop_id = 0
