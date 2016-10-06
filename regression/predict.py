@@ -1,4 +1,10 @@
 import pandas
+from sklearn import linear_model, feature_extraction
+
+def categorical_features(row):
+    d = {}
+    d["STATE"] = row[1]["STATE"]
+    return d
 
 def last_poll(full_data):
     """
@@ -30,15 +36,20 @@ if __name__ == "__main__":
     y_data["GENERAL %"] = [float(x.replace(",", ".").replace("%", ""))
                            for x in y_data["GENERAL %"]]
     y_data["STATE"] = y_data["STATE ABBREVIATION"]
+    y_data.set_index("STATE")
 
+    y_data.merge(train_x, on="STATE",how='left')
 
     # split between testing and training
     train_x = last_poll(all_data[all_data["TOPIC"] == '2012-president'])
+    train_x.set_index("STATE")
     test_x = last_poll(all_data[all_data["TOPIC"] == '2016-president'])
     print(train_x.sort("STATE").head(5))
-
-    # format the data for regression
+    test_x.set_index("STATE")
     
+    # format the data for regression
+    encoder = feature_extraction.DictVectorizer()
+    encoder.fit([{"STATE": x["STATE"]} for x in train.iterrows()])
 
 
     # fit the regression
