@@ -1,3 +1,6 @@
+# Will download data from Huffington Post and save it as data.csv
+# Run once before trying predict.py, but you shouldn't need to run it frequently.
+
 from csv import DictWriter
 import re
 
