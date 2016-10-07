@@ -28,6 +28,13 @@ if __name__ == "__main__":
 
     # Remove non-states
     all_data = all_data[pandas.notnull(all_data["STATE"])]
+
+    # split between testing and training
+    train_x = last_poll(all_data[all_data["TOPIC"] == '2012-president'])
+    train_x.set_index("STATE")
+    test_x = last_poll(all_data[all_data["TOPIC"] == '2016-president'])
+    print(train_x.sort("STATE").head(5))
+    test_x.set_index("STATE")
     
     # Read in the Y data
     y_data = pandas.read_csv("../data/2012_pres.csv", sep=';')
@@ -38,21 +45,22 @@ if __name__ == "__main__":
     y_data["STATE"] = y_data["STATE ABBREVIATION"]
     y_data.set_index("STATE")
 
-    y_data.merge(train_x, on="STATE",how='left')
-
-    # split between testing and training
-    train_x = last_poll(all_data[all_data["TOPIC"] == '2012-president'])
-    train_x.set_index("STATE")
-    test_x = last_poll(all_data[all_data["TOPIC"] == '2016-president'])
-    print(train_x.sort("STATE").head(5))
-    test_x.set_index("STATE")
+    train_x = y_data.merge(train_x, on="STATE",how='left')
     
     # format the data for regression
     encoder = feature_extraction.DictVectorizer()
-    encoder.fit([{"STATE": x["STATE"]} for x in train.iterrows()])
+    state_names_train = encoder.fit([{"STATE": x["STATE"]} for x in train_x.iterrows()])
+    train_x = pd.concat([state_names_train, train_x], axis=1)
 
-
-    # fit the regression
+    state_names_test = encoder.fit([{"STATE": x["STATE"]} for x in test_x.iterrows()])
+    test_x = pd.concat([state_names_text, test_x], axis=1)
     
+    # fit the regression
+    features = list(encoder.get_feature_names())
+    features.append("VALUE")
+
+    mod = linear_model.LinearRegression()
+    mod.fit(train[features], train["GENERAL %"])
 
     # Write the predictions
+    
