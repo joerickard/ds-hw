@@ -20,7 +20,8 @@ def last_poll(full_data):
     # Only keep the last one
     dedupe = chron.drop_duplicates(subset="STATE", keep="last")
 
-    return dedupe
+    # Remove national polls
+    return dedupe[dedupe["STATE"] != "US"]
     
 if __name__ == "__main__":
     # Read in the X data
@@ -32,8 +33,8 @@ if __name__ == "__main__":
     # split between testing and training
     train_x = last_poll(all_data[all_data["TOPIC"] == '2012-president'])
     train_x.set_index("STATE")
+    
     test_x = last_poll(all_data[all_data["TOPIC"] == '2016-president'])
-    print(train_x.sort("STATE").head(5))
     test_x.set_index("STATE")
     
     # Read in the Y data
@@ -45,22 +46,42 @@ if __name__ == "__main__":
     y_data["STATE"] = y_data["STATE ABBREVIATION"]
     y_data.set_index("STATE")
 
+    backup = train_x
     train_x = y_data.merge(train_x, on="STATE",how='left')
     
+    # make sure we have all states in the test data
+    for ii in set(y_data.STATE) - set(test_x.STATE):
+        new_row = pandas.DataFrame([{"STATE": ii}])
+        test_x = test_x.append(new_row)
+
     # format the data for regression
-    encoder = feature_extraction.DictVectorizer()
-    state_names_train = encoder.fit([{"STATE": x["STATE"]} for x in train_x.iterrows()])
-    train_x = pd.concat([state_names_train, train_x], axis=1)
-
-    state_names_test = encoder.fit([{"STATE": x["STATE"]} for x in test_x.iterrows()])
-    test_x = pd.concat([state_names_text, test_x], axis=1)
-    
-    # fit the regression
-    features = list(encoder.get_feature_names())
+    train_x = pandas.concat([train_x.STATE.astype(str).str.get_dummies(),
+                             train_x], axis=1)
+    test_x = pandas.concat([test_x.STATE.astype(str).str.get_dummies(),
+                             test_x], axis=1)
+        
+    # handle missing data
+    for dd in train_x, test_x:                
+        dd["NOPOLL"] = pandas.isnull(dd["VALUE"])
+        dd["VALUE"] = dd["VALUE"].fillna(0.0)
+        
+    # create feature list
+    features = list(y_data.STATE)
     features.append("VALUE")
-
+    features.append("NOPOLL")    
+        
+    # fit the regression
     mod = linear_model.LinearRegression()
-    mod.fit(train[features], train["GENERAL %"])
+    mod.fit(train_x[features], train_x["GENERAL %"])
 
-    # Write the predictions
+    # Write out the model
+    with open("model.txt", 'w') as out:
+        out.write("BIAS\t%f\n" % mod.intercept_)
+        for jj, kk in zip(features, mod.coef_):
+            out.write("%s\t%f\n" % (jj, kk))
     
+    # Write the predictions
+    pred_test = mod.predict(test_x[features])
+    with open("pred.txt", 'w') as out:
+        for ss, vv in sorted(zip(list(test_x.STATE), pred_test)):
+            out.write("%s\t%f\n" % (ss, vv))
