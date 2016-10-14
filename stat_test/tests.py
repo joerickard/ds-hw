@@ -1,4 +1,5 @@
 import unittest
+from scipy import *
 import pickle
 from csv import DictReader
 from collections import Counter

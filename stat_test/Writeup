@@ -1,0 +1,3 @@
+Joe Rickard Writeup:
+
+I approached this problem quite piecemeal. I worked through each stat test one at a time and chained them together, as I think the assignment intended. The results exclude very infrequent bigrams, with the min vlue passed in, however exceptionally frequent bigrams are simply products of common words, and may not actually be significant.

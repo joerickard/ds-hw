@@ -2,7 +2,6 @@ import re
 import operator
 from collections import Counter
 from zipfile import ZipFile
-
 from numpy import array
 from scipy import zeros
 from scipy.stats import chisquare
@@ -28,7 +27,6 @@ def bigrams(sentence):
     """
     Given a sentence, generate all bigrams in the sentence.
     """
-    
     for ii, ww in enumerate(sentence[:-1]):
         yield ww, sentence[ii + 1]
 
@@ -62,9 +60,7 @@ def chisquare_pvalue(obs, ex):
     @param obs An array (list of lists or numpy array) of observed values
     @param obs An array (list of lists or numpy array) of expected values
     """
-
-
-    return 1.0
+    return chisquare(array.flatten(obs), ex, 2)
 
 class BigramFinder:
     """
@@ -86,16 +82,13 @@ class BigramFinder:
     
         """
         self._exclude = set(exclude)
-
         self._max_unigram = max_unigram
         self._min_unigram = min_unigram
         self._min_ngram = min_ngram
-
         self._vocab = None
-
         # You may want to add additional data structures here.
-
         self._unigram = Counter()
+        self._bigram = Counter()
 
     def observed_and_expected(self, bigram):
         """
@@ -103,11 +96,20 @@ class BigramFinder:
 
         @bigram A tuple containing the words to score
         """
-
+        # 1,2
+        # 3,4
+        # Where 1+3 = w1.count, 1+2 = w2.count, 4 = bigrams w/ neither
         obs = zeros((2, 2))
-
+        obs[0,0] = self._bigram[bigram]  #occur together
+        obs[0,1] = self._unigram[bigram[word1]] - obs[0,0]   #just word 1
+        obs[1,0] = self._unigram[bigram[word2]] - obs[0,0]   #just word 2
+        obs[1,1] = (len(self.vocab) - self._unigram[bigram[word1]]) - obs[1,0]   #bigrams with neither.
 
         ex = zeros((2, 2))
+        ex[0,0] = (self._unigram[bigram[word1]]*self._unigram[bigram[word2]])/len(self.vocab)
+        ex[0,1] = (obs[0,0]+obs[0,1])*(obs[0,1]+obs[1,1])/len(self.vocab)
+        ex[1,0] = (obs[0,0]+obs[1,0])*(obs[1,0]+obs[1,1])/len(self.vocab)
+        ex[1,1] = (obs[0,1]+obs[1,1])*(obs[1,0]+obs[1,1])/len(self.vocab)
 
         return obs, ex
         
@@ -165,9 +167,11 @@ class BigramFinder:
         assert self._vocab is not None, "Adding counts before finalizing vocabulary"
         
         # Your code here
+        _gram = namedtuple('word1', 'word2')
         for ll, rr in bigrams(sentence):
-            None
-            # Your code here
+            _gram.word1 = ll
+            _gram.word2 = rr
+            self._bigram[_gram] += 1
 
     def valid_bigrams(self):
         """
@@ -176,7 +180,11 @@ class BigramFinder:
         """
         
         # Your code here
-        return []
+        _validGrams = self._bigram
+        for ii in list(_validGrams):
+            if _validGrams[ii] < min_ngram:
+                del _validGrams[ii]
+        return _validGrams
         
     def sorted_bigrams(self):
         """

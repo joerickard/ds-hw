@@ -55,7 +55,7 @@ vocabulary of all the possible words that can be used in a bigram.
 Unlike the language modeling assignment, you'll need to keep track of
 how many bigrams *end* with a particular word, and you'll ignore words
 and bigrams that occur too infrequently (cases where the chi-square
-test does not apply).  These parameters are provided and set by the
+test does not apply, <5).  These parameters are provided and set by the
 constructor of the BigramFinder class.  Make sure your code obeys
 these parameters.
 
